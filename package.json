@@ -1,0 +1,20 @@
+{
+  "name": "@cloudcreate/cli",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Command-line tools powered by CloudCreate shared libraries.",
+  "bin": {
+    "cloudcreate": "./bin/cloudcreate.js",
+    "cc-tools": "./bin/cloudcreate.js"
+  },
+  "scripts": {
+    "test": "node scripts/smoke.mjs"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@cloudcreate/freetools-core": "git+ssh://git@github.com/cloudcreate-ai/cloudcreate-lib.git"
+  }
+}
