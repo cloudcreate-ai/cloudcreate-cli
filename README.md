@@ -1,6 +1,6 @@
 # CloudCreate CLI
 
-Command-line tools powered by `@cloudcreate/freetools-core`.
+Command-line tools powered by `@cloudcreate/cloudcreate-core`.
 
 ## Install
 

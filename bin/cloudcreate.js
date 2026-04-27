@@ -6,13 +6,13 @@ import {
   beautify,
   minifyAggressive,
   minifyBasic,
-} from '@cloudcreate/freetools-core/css';
-import { markdownToHtml } from '@cloudcreate/freetools-core/markdown';
+} from '@cloudcreate/cloudcreate-core/css';
+import { markdownToHtml } from '@cloudcreate/cloudcreate-core/markdown';
 import {
   FORMATS as TABLE_FORMATS,
   parseTableSource,
   tableToOutput,
-} from '@cloudcreate/freetools-core/table';
+} from '@cloudcreate/cloudcreate-core/table';
 import {
   compressBrotliBytes,
   compressGzipBytes,
@@ -23,12 +23,12 @@ import {
   decompressTarGzEntries,
   decompressZipEntries,
   detectFormat,
-} from '@cloudcreate/freetools-core/archive';
+} from '@cloudcreate/cloudcreate-core/archive';
 import {
   compressImageBytes,
   getImageFormatFromNameAndMime,
   normalizeImageFormat,
-} from '@cloudcreate/freetools-core/image';
+} from '@cloudcreate/cloudcreate-core/image';
 
 const VERSION = '0.1.0';
 
