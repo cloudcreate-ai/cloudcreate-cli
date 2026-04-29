@@ -15,6 +15,6 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@cloudcreate/cloudcreate-core": "git+ssh://git@github.com/cloudcreate-ai/cloudcreate-lib.git"
+    "@cloudcreate/cloudcreate-core": "file:../cloudcreate-lib"
   }
 }

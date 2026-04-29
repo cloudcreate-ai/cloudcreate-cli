@@ -5,6 +5,8 @@ Command-line tools powered by `@cloudcreate/cloudcreate-core`.
 ## Install
 
 ```sh
+cd ../cloudcreate-lib && npm install
+cd ../cloudcreate-cli
 npm install
 npm link
 ```
@@ -20,12 +22,15 @@ cloudcreate markdown:html input.md -o output.html
 cloudcreate table:convert input.xlsx --format csv -o output.csv --sheet 0
 cloudcreate archive:compress ./file.txt ./assets --format zip -o archive.zip
 cloudcreate archive:decompress archive.zip -o ./out
-cloudcreate image:compress input.png -o output.png --quality 75
+cloudcreate image:compress input.png -o output.webp --quality 75 --format webp
+cloudcreate open image:resize --mode width --width 1200 --quality 82 --format webp
+cloudcreate open css:minify --level aggressive --print
 ```
 
 Text commands write to stdout when `-o` is omitted. Binary/file-producing commands use a generated output filename when possible.
+Use `cloudcreate open <tool>` for the browser-based path. It opens `cloudcreate.ai` with matching tool parameters; add `--print` to only print the URL.
 
 ## Notes
 
-- Image compression currently supports PNG in the Node CLI. JPEG/WebP/AVIF support should be enabled through a Node image adapter such as `sharp`.
+- Image compression uses `@cloudcreate/cloudcreate-core` codecs and supports PNG, JPEG, WebP, and AVIF inputs/outputs where the runtime supports the underlying WASM codec.
 - Table conversion uses `xlsx`, which currently has known upstream advisories without a fixed release.

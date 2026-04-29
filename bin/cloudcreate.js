@@ -1,7 +1,9 @@
 #!/usr/bin/env node
+import { spawn } from 'node:child_process';
 import { readFile, writeFile, mkdir, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
+import { buildCloudCreateToolUrl, BROWSER_TOOLS } from '@cloudcreate/cloudcreate-core/browser';
 import {
   beautify,
   minifyAggressive,
@@ -45,12 +47,17 @@ Commands:
   table:convert <input> --format csv|tsv|xlsx|json [-o output] [--sheet 0]
   archive:compress <paths...> --format zip|gzip|targz|brotli [-o output]
   archive:decompress <archive> [-o output-dir]
-  image:compress <input.png> [--quality 75] [-o output.png]
+  image:compress <input> [--quality 75] [--format png|jpeg|webp|avif] [-o output]
+  open <tool> [tool options] [--print] [--base-url url] [--locale zh]
 
 Global:
   -h, --help       Show help
   -v, --version    Show version
 `;
+}
+
+function browserToolsHelp() {
+  return BROWSER_TOOLS.map((tool) => `  ${tool.id.padEnd(18)} ${tool.path}`).join('\n');
 }
 
 function parseArgs(argv) {
@@ -265,9 +272,6 @@ async function commandImageCompress(args, options) {
   const input = requireArg(args[0], 'input image file');
   const sourceFormat = normalizeImageFormat(getImageFormatFromNameAndMime(input, ''));
   const targetFormat = normalizeImageFormat(options.format || sourceFormat);
-  if (sourceFormat !== 'png' || targetFormat !== 'png') {
-    throw new Error('The Node CLI currently supports PNG image compression only.');
-  }
   const quality = Math.min(100, Math.max(0, Number(options.quality ?? 75) || 75));
   const result = await compressImageBytes(await readInput(input), {
     sourceFormat,
@@ -278,6 +282,35 @@ async function commandImageCompress(args, options) {
   await writeOutput(output, result.buffer);
 }
 
+function openUrl(url) {
+  const platform = process.platform;
+  const command = platform === 'darwin'
+    ? 'open'
+    : platform === 'win32'
+      ? 'cmd'
+      : 'xdg-open';
+  const args = platform === 'win32' ? ['/c', 'start', '', url] : [url];
+  const child = spawn(command, args, {
+    detached: true,
+    stdio: 'ignore',
+  });
+  child.unref();
+}
+
+async function commandOpen(args, options) {
+  const tool = requireArg(args[0], `browser tool\n\nAvailable tools:\n${browserToolsHelp()}`);
+  const url = buildCloudCreateToolUrl(tool, {
+    ...options,
+    origin: options['base-url'] || options.origin,
+  });
+  if (options.print || options.dryRun || options['dry-run']) {
+    process.stdout.write(`${url}\n`);
+    return;
+  }
+  openUrl(url);
+  process.stdout.write(`${url}\n`);
+}
+
 const commands = {
   'css:minify': commandCssMinify,
   'css:beautify': commandCssBeautify,
@@ -286,6 +319,7 @@ const commands = {
   'archive:compress': commandArchiveCompress,
   'archive:decompress': commandArchiveDecompress,
   'image:compress': commandImageCompress,
+  open: commandOpen,
 };
 
 async function main() {

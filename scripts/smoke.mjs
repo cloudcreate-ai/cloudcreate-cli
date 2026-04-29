@@ -3,10 +3,10 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
-import { PNG } from 'pngjs';
+import { fileURLToPath } from 'node:url';
 
 const exec = promisify(execFile);
-const root = path.resolve(import.meta.dirname, '..');
+const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const bin = path.join(root, 'bin', 'cloudcreate.js');
 const dir = await mkdtemp(path.join(tmpdir(), 'cloudcreate-cli-'));
 
@@ -46,14 +46,20 @@ if (!(await readFile(path.join(unpackDir, 'input.css'), 'utf8')).includes('color
   throw new Error('archive smoke failed');
 }
 
-const png = new PNG({ width: 1, height: 1 });
-png.data.set([255, 255, 255, 255]);
 const pngIn = path.join(dir, 'input.png');
 const pngOut = path.join(dir, 'output.png');
-await writeFile(pngIn, PNG.sync.write(png));
+await writeFile(pngIn, Buffer.from(
+  'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAC0lEQVR4AWP4DwQACfsD/c8LaHIAAAAASUVORK5CYII=',
+  'base64'
+));
 await run(['image:compress', pngIn, '-o', pngOut, '--quality', '75']);
 if ((await readFile(pngOut)).length <= 0) {
   throw new Error('image:compress smoke failed');
+}
+
+const { stdout: openUrl } = await run(['open', 'css:minify', '--level', 'aggressive', '--print']);
+if (!openUrl.trim().endsWith('/css/minify?level=aggressive')) {
+  throw new Error('open smoke failed');
 }
 
 console.log('smoke ok');
