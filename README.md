@@ -3,17 +3,24 @@
 Command-line tools powered by `@cloudcreate/cloudcreate-core`.
 
 Online experience: https://cloudcreate.ai
+GitHub repository: https://github.com/cloudcreate-ai/cloudcreate-cli
 
 ## Install
 
+For regular use, install from npm:
+
 ```sh
-cd ../cloudcreate-lib && npm install
-cd ../cloudcreate-cli
-npm install
-npm link
+npm install -g @cloudcreate/cli
 ```
 
 Then run either `cloudcreate` or `cc-tools`.
+
+For local development from this repository:
+
+```sh
+npm install
+npm link
+```
 
 ## Commands
 

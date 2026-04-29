@@ -1,8 +1,16 @@
 {
   "name": "@cloudcreate/cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "description": "Command-line tools powered by CloudCreate shared libraries.",
+  "homepage": "https://cloudcreate.ai",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cloudcreate-ai/cloudcreate-cli.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cloudcreate-ai/cloudcreate-cli/issues"
+  },
   "bin": {
     "cloudcreate": "./bin/cloudcreate.js",
     "cc-tools": "./bin/cloudcreate.js"
