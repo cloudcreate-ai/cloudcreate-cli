@@ -3,18 +3,18 @@ import { spawn } from 'node:child_process';
 import { readFile, writeFile, mkdir, readdir, stat } from 'node:fs/promises';
 import path from 'node:path';
 import process from 'node:process';
-import { buildCloudCreateToolUrl, BROWSER_TOOLS } from '@cloudcreate/cloudcreate-core/browser';
+import { buildCloudCreateToolUrl, BROWSER_TOOLS } from '@cloudcreate/core/browser';
 import {
   beautify,
   minifyAggressive,
   minifyBasic,
-} from '@cloudcreate/cloudcreate-core/css';
-import { markdownToHtml } from '@cloudcreate/cloudcreate-core/markdown';
+} from '@cloudcreate/core/css';
+import { markdownToHtml } from '@cloudcreate/core/markdown';
 import {
   FORMATS as TABLE_FORMATS,
   parseTableSource,
   tableToOutput,
-} from '@cloudcreate/cloudcreate-core/table';
+} from '@cloudcreate/core/table';
 import {
   compressBrotliBytes,
   compressGzipBytes,
@@ -25,12 +25,12 @@ import {
   decompressTarGzEntries,
   decompressZipEntries,
   detectFormat,
-} from '@cloudcreate/cloudcreate-core/archive';
+} from '@cloudcreate/core/archive';
 import {
   compressImageBytes,
   getImageFormatFromNameAndMime,
   normalizeImageFormat,
-} from '@cloudcreate/cloudcreate-core/image';
+} from '@cloudcreate/core/image';
 
 const VERSION = '0.1.0';
 

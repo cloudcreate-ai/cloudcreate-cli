@@ -1,6 +1,6 @@
 # CloudCreate CLI
 
-Command-line tools powered by `@cloudcreate/cloudcreate-core`.
+Command-line tools powered by `@cloudcreate/core`.
 
 Online experience: https://cloudcreate.ai
 GitHub repository: https://github.com/cloudcreate-ai/cloudcreate-cli
@@ -41,5 +41,5 @@ Use `cloudcreate open <tool>` for the browser-based path. It opens `cloudcreate.
 
 ## Notes
 
-- Image compression uses `@cloudcreate/cloudcreate-core` codecs and supports PNG, JPEG, WebP, and AVIF inputs/outputs where the runtime supports the underlying WASM codec.
+- Image compression uses `@cloudcreate/core` codecs and supports PNG, JPEG, WebP, and AVIF inputs/outputs where the runtime supports the underlying WASM codec.
 - Table conversion uses `xlsx`, which currently has known upstream advisories without a fixed release.
