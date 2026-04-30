@@ -57,6 +57,16 @@ if ((await readFile(pngOut)).length <= 0) {
   throw new Error('image:compress smoke failed');
 }
 
+const pdfIn = path.join(dir, 'input.pdf');
+await writeFile(pdfIn, Buffer.from(
+  'JVBERi0xLjcKJYGBgYEKCjYgMCBvYmoKPDwKL0ZpbHRlciAvRmxhdGVEZWNvZGUKL0xlbmd0aCA4MQo+PgpzdHJlYW0KeJwr5HIK4TJQAMGidC59j9ScstSSzOREXXMDSwsTCwNzC0sFIxOFkDQuEOnDZQhWCiFDcrlszCzMTM2cgdDNTiEkiytEi8s1hCuQCwCA0xNyCmVuZHN0cmVhbQplbmRvYmoKCjcgMCBvYmoKPDwKL0ZpbHRlciAvRmxhdGVEZWNvZGUKL1R5cGUgL09ialN0bQovTiA1Ci9GaXJzdCAyNgovTGVuZ3RoIDM2MAo+PgpzdHJlYW0KeJzVUk1Lw0AQve+vmKMeZD+SZhMphbZJFKQoraAoHtJkKZGyK8lG6r93JkktPYhnCcPOx5udt5knQYCCMIQAdAwhTAIFE9BSwnTK+OPXhwH+UOxMy/hdXbXwihgBa3hjfOk660Gy2YydsMvCF3u3Y0MTSAIfEQ+Nq7rSNDDNszwXQgshohAtEkKleC7REjSFMdZUjD6aDkfDnA6ECOZYyweL9NBD9R47GfszPBEbESYdsGE8xD9zaVY23KH+4pPMGF+5Ki28gYv0WgkViRAHaPTkyyX+jsYU3v3fx/X8a2d/feHZnmm9tOTGkAb6LfO1aV3XlLh2wuUOK+Tcmv2n8XVZXGmRxMhTxwlqbBQGf77fvpuyh1KYHfzNxhOHIUG5lanqYuEOqD6BXyQV6ESRBufWOk+q7PVoPbKhKBo1ekaZCDG+6ba+DykpGV8UrempnngiCVu6qrY74E+1ndu2Piboxm8E+MXaCmVuZHN0cmVhbQplbmRvYmoKCjggMCBvYmoKPDwKL1NpemUgOQovUm9vdCAyIDAgUgovSW5mbyAzIDAgUgovRmlsdGVyIC9GbGF0ZURlY29kZQovVHlwZSAvWFJlZgovTGVuZ3RoIDQwCi9XIFsgMSAyIDIgXQovSW5kZXggWyAwIDkgXQo+PgpzdHJlYW0KeJwVxLERACAMA7G3wx0t2zITUyZYhYBusyEpOVVa4oB4P18YYE8DawplbmRzdHJlYW0KZW5kb2JqCgpzdGFydHhyZWYKNjMxCiUlRU9G',
+  'base64'
+));
+const { stdout: pdfInfo } = await run(['pdf:info', pdfIn, '--max-pages', '1']);
+if (!pdfInfo.includes('"numPages": 1') || !pdfInfo.includes('"widthPts": 612')) {
+  throw new Error('pdf:info smoke failed');
+}
+
 const { stdout: openUrl } = await run(['open', 'css:minify', '--level', 'aggressive', '--print']);
 if (!openUrl.trim().endsWith('/css/minify?level=aggressive')) {
   throw new Error('open smoke failed');

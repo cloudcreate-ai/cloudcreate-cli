@@ -32,6 +32,7 @@ cloudcreate table:convert input.xlsx --format csv -o output.csv --sheet 0
 cloudcreate archive:compress ./file.txt ./assets --format zip -o archive.zip
 cloudcreate archive:decompress archive.zip -o ./out
 cloudcreate image:compress input.png -o output.webp --quality 75 --format webp
+cloudcreate pdf:info input.pdf --max-pages 2
 cloudcreate open image:resize --mode width --width 1200 --quality 82 --format webp
 cloudcreate open css:minify --level aggressive --print
 ```

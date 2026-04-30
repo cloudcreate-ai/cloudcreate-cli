@@ -31,6 +31,7 @@ import {
   getImageFormatFromNameAndMime,
   normalizeImageFormat,
 } from '@cloudcreate/core/image';
+import { getPdfInfo } from '@cloudcreate/core/pdf';
 
 const VERSION = '0.1.0';
 
@@ -48,6 +49,7 @@ Commands:
   archive:compress <paths...> --format zip|gzip|targz|brotli [-o output]
   archive:decompress <archive> [-o output-dir]
   image:compress <input> [--quality 75] [--format png|jpeg|webp|avif] [-o output]
+  pdf:info <input> [--max-pages 3] [-o output.json]
   open <tool> [tool options] [--print] [--base-url url] [--locale zh]
 
 Global:
@@ -282,6 +284,15 @@ async function commandImageCompress(args, options) {
   await writeOutput(output, result.buffer);
 }
 
+async function commandPdfInfo(args, options) {
+  const input = requireArg(args[0], 'input PDF file');
+  const maxPagesRaw = options['max-pages'] ?? options.maxPages ?? options.pages;
+  const maxPages = maxPagesRaw == null ? undefined : Math.max(1, Number.parseInt(maxPagesRaw, 10) || 1);
+  const info = await getPdfInfo(await readInput(input), { maxPages });
+  const json = `${JSON.stringify(info, null, 2)}\n`;
+  await writeOutput(options.output, json, { stdout: true });
+}
+
 function openUrl(url) {
   const platform = process.platform;
   const command = platform === 'darwin'
@@ -319,6 +330,7 @@ const commands = {
   'archive:compress': commandArchiveCompress,
   'archive:decompress': commandArchiveDecompress,
   'image:compress': commandImageCompress,
+  'pdf:info': commandPdfInfo,
   open: commandOpen,
 };
 
