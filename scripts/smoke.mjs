@@ -71,6 +71,12 @@ await run(['pdf:extract', pdfIn, '--pages', '1', '-o', pdfExtractOut]);
 if ((await readFile(pdfExtractOut)).length <= 0) {
   throw new Error('pdf:extract smoke failed');
 }
+const pdfMergeOut = path.join(dir, 'merged.pdf');
+await run(['pdf:merge', pdfIn, pdfIn, '-o', pdfMergeOut]);
+const { stdout: mergedInfo } = await run(['pdf:info', pdfMergeOut, '--max-pages', '1']);
+if (!mergedInfo.includes('"numPages": 2')) {
+  throw new Error('pdf:merge smoke failed');
+}
 
 const { stdout: openUrl } = await run(['open', 'css:minify', '--level', 'aggressive', '--print']);
 if (!openUrl.trim().endsWith('/css/minify?level=aggressive')) {

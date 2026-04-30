@@ -31,7 +31,7 @@ import {
   getImageFormatFromNameAndMime,
   normalizeImageFormat,
 } from '@cloudcreate/core/image';
-import { extractPdfPages, getPdfInfo } from '@cloudcreate/core/pdf';
+import { extractPdfPages, getPdfInfo, mergePdfDocuments } from '@cloudcreate/core/pdf';
 
 const VERSION = '0.1.0';
 
@@ -51,6 +51,7 @@ Commands:
   image:compress <input> [--quality 75] [--format png|jpeg|webp|avif] [-o output]
   pdf:info <input> [--max-pages 3] [-o output.json]
   pdf:extract <input> --pages 1,3-5 [-o output.pdf]
+  pdf:merge <inputs...> [-o output.pdf]
   open <tool> [tool options] [--print] [--base-url url] [--locale zh]
 
 Global:
@@ -302,6 +303,21 @@ async function commandPdfExtract(args, options) {
   await writeOutput(output, result.buffer);
 }
 
+async function commandPdfMerge(args, options) {
+  if (!args.length) {
+    throw new Error('Missing input PDF files');
+  }
+  const inputs = await Promise.all(
+    args.map(async (input) => ({
+      name: path.basename(input),
+      buffer: await readInput(input),
+    })),
+  );
+  const result = await mergePdfDocuments(inputs);
+  const output = options.output || defaultOutputFor(args[0], 'merged', 'pdf');
+  await writeOutput(output, result.buffer);
+}
+
 function openUrl(url) {
   const platform = process.platform;
   const command = platform === 'darwin'
@@ -341,6 +357,7 @@ const commands = {
   'image:compress': commandImageCompress,
   'pdf:info': commandPdfInfo,
   'pdf:extract': commandPdfExtract,
+  'pdf:merge': commandPdfMerge,
   open: commandOpen,
 };
 

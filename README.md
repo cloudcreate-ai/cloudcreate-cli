@@ -34,6 +34,7 @@ cloudcreate archive:decompress archive.zip -o ./out
 cloudcreate image:compress input.png -o output.webp --quality 75 --format webp
 cloudcreate pdf:info input.pdf --max-pages 2
 cloudcreate pdf:extract input.pdf --pages 1,3-5 -o excerpt.pdf
+cloudcreate pdf:merge part-a.pdf part-b.pdf -o merged.pdf
 cloudcreate open image:resize --mode width --width 1200 --quality 82 --format webp
 cloudcreate open css:minify --level aggressive --print
 ```
