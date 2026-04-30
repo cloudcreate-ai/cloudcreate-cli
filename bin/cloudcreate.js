@@ -31,7 +31,7 @@ import {
   getImageFormatFromNameAndMime,
   normalizeImageFormat,
 } from '@cloudcreate/core/image';
-import { getPdfInfo } from '@cloudcreate/core/pdf';
+import { extractPdfPages, getPdfInfo } from '@cloudcreate/core/pdf';
 
 const VERSION = '0.1.0';
 
@@ -50,6 +50,7 @@ Commands:
   archive:decompress <archive> [-o output-dir]
   image:compress <input> [--quality 75] [--format png|jpeg|webp|avif] [-o output]
   pdf:info <input> [--max-pages 3] [-o output.json]
+  pdf:extract <input> --pages 1,3-5 [-o output.pdf]
   open <tool> [tool options] [--print] [--base-url url] [--locale zh]
 
 Global:
@@ -293,6 +294,14 @@ async function commandPdfInfo(args, options) {
   await writeOutput(options.output, json, { stdout: true });
 }
 
+async function commandPdfExtract(args, options) {
+  const input = requireArg(args[0], 'input PDF file');
+  const pages = String(requireArg(options.pages ?? options.p, 'page range')).trim();
+  const result = await extractPdfPages(await readInput(input), { pages });
+  const output = options.output || defaultOutputFor(input, 'extract', 'pdf');
+  await writeOutput(output, result.buffer);
+}
+
 function openUrl(url) {
   const platform = process.platform;
   const command = platform === 'darwin'
@@ -331,6 +340,7 @@ const commands = {
   'archive:decompress': commandArchiveDecompress,
   'image:compress': commandImageCompress,
   'pdf:info': commandPdfInfo,
+  'pdf:extract': commandPdfExtract,
   open: commandOpen,
 };
 

@@ -66,6 +66,11 @@ const { stdout: pdfInfo } = await run(['pdf:info', pdfIn, '--max-pages', '1']);
 if (!pdfInfo.includes('"numPages": 1') || !pdfInfo.includes('"widthPts": 612')) {
   throw new Error('pdf:info smoke failed');
 }
+const pdfExtractOut = path.join(dir, 'extract.pdf');
+await run(['pdf:extract', pdfIn, '--pages', '1', '-o', pdfExtractOut]);
+if ((await readFile(pdfExtractOut)).length <= 0) {
+  throw new Error('pdf:extract smoke failed');
+}
 
 const { stdout: openUrl } = await run(['open', 'css:minify', '--level', 'aggressive', '--print']);
 if (!openUrl.trim().endsWith('/css/minify?level=aggressive')) {
