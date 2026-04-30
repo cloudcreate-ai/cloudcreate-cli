@@ -31,7 +31,7 @@ import {
   getImageFormatFromNameAndMime,
   normalizeImageFormat,
 } from '@cloudcreate/core/image';
-import { extractPdfPages, getPdfInfo, mergePdfDocuments } from '@cloudcreate/core/pdf';
+import { extractPdfPages, getPdfInfo, mergePdfDocuments, splitPdfPages } from '@cloudcreate/core/pdf';
 
 const VERSION = '0.1.0';
 
@@ -52,6 +52,7 @@ Commands:
   pdf:info <input> [--max-pages 3] [-o output.json]
   pdf:extract <input> --pages 1,3-5 [-o output.pdf]
   pdf:merge <inputs...> [-o output.pdf]
+  pdf:split <input> [--pages 1,3-5] [-o output-dir]
   open <tool> [tool options] [--print] [--base-url url] [--locale zh]
 
 Global:
@@ -318,6 +319,22 @@ async function commandPdfMerge(args, options) {
   await writeOutput(output, result.buffer);
 }
 
+async function commandPdfSplit(args, options) {
+  const input = requireArg(args[0], 'input PDF file');
+  const pages = options.pages ?? options.p;
+  const base = path.basename(input).replace(/\.pdf$/i, '') || 'document';
+  const result = await splitPdfPages(await readInput(input), {
+    pages: pages ? String(pages).trim() : undefined,
+    prefix: base,
+  });
+  const outDir = options.output || path.join(path.dirname(input), `${base}-split`);
+  await mkdir(outDir, { recursive: true });
+  for (const doc of result.documents) {
+    await writeOutput(path.join(outDir, doc.name), doc.buffer);
+  }
+  console.error(`Wrote ${result.documents.length} file(s) to ${outDir}`);
+}
+
 function openUrl(url) {
   const platform = process.platform;
   const command = platform === 'darwin'
@@ -358,6 +375,7 @@ const commands = {
   'pdf:info': commandPdfInfo,
   'pdf:extract': commandPdfExtract,
   'pdf:merge': commandPdfMerge,
+  'pdf:split': commandPdfSplit,
   open: commandOpen,
 };
 
