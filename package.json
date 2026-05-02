@@ -1,6 +1,6 @@
 {
   "name": "@cloudcreate/cli",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "type": "module",
   "description": "Command-line tools powered by CloudCreate shared libraries.",
   "homepage": "https://cloudcreate.ai",
@@ -22,6 +22,6 @@
     "node": ">=22"
   },
   "dependencies": {
-    "@cloudcreate/core": "^0.1.1"
+    "@cloudcreate/core": "^0.2.0"
   }
 }
